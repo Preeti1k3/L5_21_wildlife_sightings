@@ -16,8 +16,8 @@ def log_sighting(conn, species, zone, count, extras=None):
         extras = {}
 
     conn.execute(
-        "INSERT INTO sightings (species, zone, count) "
-        "VALUES ('{}', '{}', {})".format(species, zone, count)
+        "INSERT INTO sightings (species, zone, count) VALUES (?, ?, ?)",
+        (species, zone, count)
     )
     extras[species] = extras.get(species, 0) + count
     return extras
@@ -25,7 +25,7 @@ def log_sighting(conn, species, zone, count, extras=None):
 
 def observer_id(observer):
     """Generate a short identifier for a wildlife observer."""
-    return hashlib.md5(observer.encode()).hexdigest()[:6]
+    return hashlib.sha256(observer.encode()).hexdigest()[:6]
 
 
 def zone_summary(conn, zone):
